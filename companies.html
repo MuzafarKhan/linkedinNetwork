@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Company Table</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <style>
+         #companyTable td {
+         vertical-align: middle;
+         }
+         #companyTable td,
+         #companyTable th,
+         .modal-body input,
+         .modal-body label {
+         font-size: 12px;
+         }
+
+         .table td {
+            text-align: center;   
+            }
+
+         .companylogo {
+         max-width: 100px;
+         /*border: 1px solid;*/
+         height: 100px;
+         }
+         .timeAgoClass{
+             font-size: xx-small;
+            color: grey;
+         }
+		 .navbar-fixed-top {
+			position: Fixed;
+			width: 100%;
+			top: 0px;
+			z-index:1;
+		}
+		.mtp-5{
+			margin-top:5%;
+		}
+      </style>
+   </head>
+   <body>
+   <div>
+	 <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top">
+	  <a class="navbar-brand" href="https://mkhanapp.000webhostapp.com/companies.html#">Home</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav">
+		  <li class="nav-item">
+			<a class="nav-link" id="addRowBtn" href="#">Add Companies</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" id="exportBtn" href="#">Export</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" id="importBtn" href="#">Import</a>
+		  </li>
+		   <li class="nav-item">
+			<a class="nav-link" href="https://mkhanapp.000webhostapp.com/people.html#">All People</a>
+		  </li>
+		</ul>
+	  </div>
+	</nav>
+   </div>
+   
+      <div class="container mtp-5">
+         <table id="companyTable" class="table table-bordered">
+            <thead>
+               <tr>
+                  <th>Company Name</th>
+                  <th>Followers</th>
+                  <th>People</th>
+                  <th>Last Checked</th>
+                  <!-- New column for LastChecked -->
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <!-- Table rows will be dynamically populated here -->
+            </tbody>
+         </table>
+       
+      </div>
+      <!-- Modal for Adding/Editting Company -->
+      <div class="modal fade" id="companyModal">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <!-- Modal Header -->
+               <div class="modal-header">
+                  <h4 class="modal-title">Add/Edit Company</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+               </div>
+               <!-- Modal Body -->
+               <div class="modal-body">
+                  <form id="companyForm">
+                     <div class="form-group">
+                        <label for="companyName">Company Name:</label>
+                        <input type="text" class="form-control" id="companyName" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="companyFollowers">Followers:</label>
+                        <input type="number" class="form-control" value="0" id="companyFollowers" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="companyLogoURL">Company Logo URL:</label>
+                        <input type="text" class="form-control" id="companyLogoURL" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="companyURL">Company URL:</label>
+                        <input type="text" class="form-control" id="companyURL" required>
+                     </div>
+                     <!-- Other input fields such as logo URL can be added here -->
+                     <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Modal for Adding/Editting People -->
+      <div class="modal fade" id="peopleModal">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <!-- Modal Header -->
+               <div class="modal-header">
+                  <h4 class="modal-title">Add/Edit People</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+               </div>
+               <!-- Modal Body -->
+               <div class="modal-body">
+                  <form id="peopleForm">
+                     <div class="form-group">
+                        <label for="personName">Name:</label>
+                        <input type="text" class="form-control" id="personName" required>
+                     </div>
+                      <div class="form-group">
+                        <label for="designation">Designation:</label>
+                        <input type="text" class="form-control" id="designation" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="personLogoURL">Person Logo URL:</label>
+                        <input type="text" class="form-control" id="personLogoURL" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="personProfileURL">Person Profile URL:</label>
+                        <input type="text" class="form-control" id="personProfileURL" required>
+                     </div>
+                     <div class="form-group">
+                        <label for="requestSent"><i class="fas fa-times-circle text-danger"></i> Request Sent:</label>
+                        <input type="checkbox" class="form-control" id="requestSent">
+                     </div>
+   
+                     <div class="form-group">
+                        <label for="added"><i class="fas fa-times-circle text-danger"></i> Added:</label>
+                        <input type="checkbox" class="form-control" id="added">
+                     </div>
+                    <div class="form-group">
+                        <label for="messageSent"><i class="fas fa-times-circle text-danger"></i> Message Sent:</label>
+                        <input type="checkbox" class="form-control" id="messageSent">
+                     </div>
+                     <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script>
+         // Function to populate the table from local storage
+         function populateTable() {
+         
+         $('#companyTable').DataTable().clear().destroy();
+         
+              // Retrieve data from local storage
+         let companies = JSON.parse(localStorage.getItem('companies')) || [];
+         let tableBody = $('#companyTable tbody');
+         tableBody.empty(); // Clear existing rows
+         
+         // Loop through each company and create table row
+         companies.forEach((company, index) => {
+            
+         let lastCheckedDateFormated = new Date(company.lastChecked).toLocaleString(); // Convert ISO string to localized date-time 
+             let row = `<tr>
+                 <td style="text-align: center;">
+                     <a href="#" class="company-link" data-index="${index}">
+                         <img src="${company.logo}" alt="Company Logo" class="companylogo">
+                     </a>
+                     <br>
+                     <a href="#" class="company-link" data-index="${index}">${company.name} </a><br> <div class='timeAgoClass'>${timeAgo(company.createdAt)}</div>
+                 </td>
+         <td >${company.followers ? company.followers : 0 }</td>
+                 <td id="people_${index}"></td>
+                 <td id="lastChecked_${index}"><div style="display:none;">${company.lastChecked}</div>${lastCheckedDateFormated} , <br> <div class='timeAgoClass'>${timeAgo(company.lastChecked)}</div></td> <!-- Display time ago -->
+                 <td>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <button class="btn btn-warning btn-sm dropdown-item"" onclick="editCompany(${index})">Edit</button>
+                            <button class="btn btn-danger btn-sm dropdown-item" onclick="deleteCompany(${index})">Delete</button> 
+                            <button class="btn btn-primary btn-sm dropdown-item" onclick="addPeople(${index})">Add People</button>
+                        </div>
+                    </div>
+                </td>
+             </tr>`;
+             tableBody.append(row);
+             fetchPeople(index);
+         });
+         
+			 // Reinitialize DataTable
+			 $('#companyTable').on( 'order.dt',  function () { companyClickBind(); profileClickBind(); } )
+			.on( 'search.dt', function () { companyClickBind(); profileClickBind(); } )
+			.on( 'page.dt',   function () { companyClickBind(); profileClickBind(); } ).DataTable({
+			 "order": [[3,'desc']], // Disable initial sorting
+			 "retrieve": true,
+			 "paging": true, // Enable pagination
+			 "searching": true, // Enable search
+			 "info": true, // Enable info display
+			"pageLength": 10,
+			 autoWidth: false,
+			"columnDefs": [
+				{ "width": "15%", "targets": 0 },
+				{ "width": "10%", "targets": 1 },
+				{ "width": "40%", "targets": 2 },
+				{ "width": "15%", "targets": 3 },
+				{ "width": "10%", "targets": 4 },
+			  ]
+			 });
+		 
+         }
+         
+		
+          function timeAgo (date){
+             if(!date) return '';
+             let actualDate = new Date(date);
+             let currentTime = new Date();
+             let elapsedTime = currentTime - actualDate;
+             let elapsedSeconds = Math.floor(elapsedTime / 1000);
+         
+             // Calculate the time ago
+             let timeAgo;
+             if (elapsedSeconds < 60) {
+                 timeAgo = `${elapsedSeconds} second${elapsedSeconds !== 1 ? 's' : ''} ago`;
+             } else if (elapsedSeconds < 3600) {
+                 let elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                 timeAgo = `${elapsedMinutes} minute${elapsedMinutes !== 1 ? 's' : ''} ago`;
+             } else if (elapsedSeconds < 86400) {
+                 let elapsedHours = Math.floor(elapsedSeconds / 3600);
+                 timeAgo = `${elapsedHours} hour${elapsedHours !== 1 ? 's' : ''} ago`;
+             } else {
+                 let elapsedDays = Math.floor(elapsedSeconds / 86400);
+                 timeAgo = `${elapsedDays} day${elapsedDays !== 1 ? 's' : ''} ago`;
+             }
+             return timeAgo;
+         }
+         // Function to fetch and display people for a company
+         function fetchPeople(index) {
+           // Dummy function to simulate fetching people data
+           let peopleTable = `<table class="table">
+             <thead>
+               <tr>
+                 <th>Name</th>
+                 <th>Picture</th>
+                 <th>RequestSent / Added / Message Sent</th>
+                 <th>Action</th>
+               </tr>
+             </thead>
+             <tbody>
+               <!-- People rows will be dynamically populated here -->
+             </tbody>
+           </table>`;
+           $(`#people_${index}`).html(peopleTable);
+           
+           // Fetch people data from local storage 
+           let people = JSON.parse(localStorage.getItem(`people_${index}`)) || [];
+           let peopleTableBody = $(`#people_${index} tbody`);
+           peopleTableBody.empty(); // Clear existing rows
+            
+           // Loop through each person and create table row
+           people.forEach((person, personIndex) => {
+             let row = `<tr style="${person.requestSent && person.added && person.messageSent ? 'background-color: gainsboro;' : ''}">
+               <td style="width:20%">
+                    <a href="#" class="profile-link"  data-index="${index}" data-personindex="${personIndex}">${person.name} </a>
+                   
+                    <!--<div> <br>${person.designation ?person.designation : '' }</div>-->
+                    <br>
+                    <div class='timeAgoClass'>${timeAgo(person.createdAt)}</div>
+                    
+                </td>
+               <td style="width:10%"><img src="${person.logoURL}" alt="Person Logo" style="max-width: 50px;"></td>
+           
+               <td style="width:40%;">
+                    ${person.requestSent ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'} /
+                    ${person.added ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'} / 
+                    ${person.messageSent ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'}
+               </td>
+               <td style="width:30%"><button class="btn btn-success btn-sm" onclick="editPerson(${index}, ${personIndex})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerson(${index}, ${personIndex})">Delete</button></td>
+             </tr>`;
+             peopleTableBody.append(row);
+           });
+         }
+         
+         // Function to handle form submission for adding/editing company
+         $('#companyForm').submit(function(event) {
+           event.preventDefault();
+           let companyLogoURL = $('#companyLogoURL').val();
+           let companyName = $('#companyName').val();
+           let companyFollowers = $('#companyFollowers').val();
+         
+           let companyURL = $('#companyURL').val();
+           let companies = JSON.parse(localStorage.getItem('companies')) || [];
+           let companyId = $('#companyModal').data('companyId');
+         
+           if (companyId === undefined) { // Add new company
+             companies.push({ logo: companyLogoURL, name: companyName,followers:companyFollowers, url: companyURL, lastChecked: new Date().toISOString() , createdAt : new Date()});
+           } else { // Edit existing company
+             companies[companyId].logo = companyLogoURL;
+             companies[companyId].name = companyName;
+             companies[companyId].followers = companyFollowers;
+             companies[companyId].url = companyURL;
+             companies[companyId].lastChecked = new Date().toISOString();
+             if (!companies[companyId].createdAt) companies[companyId].createdAt = new Date();
+           }
+         
+           localStorage.setItem('companies', JSON.stringify(companies));
+           $('#companyModal').modal('hide');
+           populateTable();
+         });
+         
+         // Function to handle form submission for adding/editing people
+         $('#peopleForm').submit(function(event) {
+           event.preventDefault();
+           let personName = $('#personName').val();
+           let designation = $('#designation').val();
+           let personLogoURL = $('#personLogoURL').val();
+           let personProfileURL = $('#personProfileURL').val();
+           let requestSent = $('#requestSent').prop('checked');
+           let messageSent = $('#messageSent').prop('checked');
+           
+           let added = $('#added').prop('checked');
+           let companyIndex = $('#peopleModal').data('companyIndex');
+           let people = JSON.parse(localStorage.getItem(`people_${companyIndex}`)) || [];
+           let personIndex = $('#peopleModal').data('personIndex');
+         
+         updateLastChecked(companyIndex);
+         
+           if (personIndex === undefined || personIndex === '') { // Add new person
+             people.push({ name: personName,designation:designation, logoURL: personLogoURL, profileURL: personProfileURL, requestSent: requestSent,messageSent:messageSent, added: added , createdAt : new Date()});
+           } else { // Edit existing person
+             people[personIndex].name = personName;
+			 if (!people[personIndex].designation) people[personIndex].designation = designation;
+             people[personIndex].logoURL = personLogoURL;
+             people[personIndex].profileURL = personProfileURL;
+             people[personIndex].requestSent = requestSent;
+             people[personIndex].messageSent = messageSent;
+             if (!people[personIndex].createdAt) people[personIndex].createdAt = new Date();
+             
+             people[personIndex].added = added;
+           }
+         
+           localStorage.setItem(`people_${companyIndex}`, JSON.stringify(people));
+           $('#peopleModal').modal('hide');
+           fetchPeople(companyIndex);
+         });
+         
+         // Function to open modal for adding/editing company
+         $('#addRowBtn').click(function() {
+           $('#companyLogoURL').val('');
+           $('#companyName').val('');
+           $('#companyFollowers').val('');
+           $('#companyURL').val('');
+           $('#companyModal').removeData('companyId');
+           $('#companyModal').modal('show');
+         });
+         
+         
+          // Function to open modal for adding people
+         function addPeople(index) {
+           $('#personName').val('');
+           $('#designation').val('');
+           $('#personLogoURL').val('');
+           $('#personProfileURL').val('');
+           $('#requestSent').prop('checked', false);
+           $('#messageSent').prop('checked', false);
+           $('#added').prop('checked', false);
+           $('#peopleModal').data('companyIndex', index);
+           $('#peopleModal').modal('show');
+         $('#peopleModal').data('personIndex', '');
+         }
+         
+         // Function to edit company
+         function editCompany(index) {
+           let companies = JSON.parse(localStorage.getItem('companies')) || [];
+           $('#companyLogoURL').val(companies[index].logo);
+           $('#companyName').val(companies[index].name);
+           $('#companyFollowers').val(companies[index].followers);
+         
+           $('#companyURL').val(companies[index].url);
+           $('#companyModal').data('companyId', index);
+           $('#companyModal').modal('show');
+         }
+         
+         // Function to delete company
+         function deleteCompany(index) {
+           let companies = JSON.parse(localStorage.getItem('companies')) || [];
+           companies.splice(index, 1);
+           localStorage.setItem('companies', JSON.stringify(companies));
+           populateTable();
+         }
+         
+         // Function to edit person
+         function editPerson(companyIndex, personIndex) {
+           let people = JSON.parse(localStorage.getItem(`people_${companyIndex}`)) || [];
+           let person = people[personIndex];
+           $('#personName').val(person.name);
+           $('#designation').val(person.designation);
+           $('#personLogoURL').val(person.logoURL);
+           $('#personProfileURL').val(person.profileURL);
+           $('#requestSent').prop('checked', person.requestSent);
+           $('#messageSent').prop('checked', person.messageSent);
+           
+
+           $('#added').prop('checked', person.added);
+           $('#peopleModal').data('companyIndex', companyIndex);
+           $('#peopleModal').data('personIndex', personIndex);
+           $('#peopleModal').modal('show');
+         }
+         
+         // Function to delete person
+         function deletePerson(companyIndex, personIndex) {
+           let people = JSON.parse(localStorage.getItem(`people_${companyIndex}`)) || [];
+           people.splice(personIndex, 1);
+           localStorage.setItem(`people_${companyIndex}`, JSON.stringify(people));
+           fetchPeople(companyIndex);
+         }
+         
+        function companyClickBind(){
+              // Bind click event to company name links
+             $('.company-link').click(function(event) {
+             event.preventDefault();
+             let index = $(this).data('index');
+             let companies = JSON.parse(localStorage.getItem('companies')) || [];
+             let company = companies[index];
+             updateLastChecked(index); // Update LastChecked when company URL is opened
+             if(company.url.indexOf('http') == -1)
+             window.open('https://'+company.url, '_blank');
+             else
+             window.open(company.url, '_blank');
+             });
+        }
+        
+         function profileClickBind(){
+             // Bind click event to company name links
+             $('.profile-link').click(function(event) {
+             event.preventDefault();
+             let index = $(this).data('index');
+             let personindex = $(this).data('personindex');
+             let peoples = JSON.parse(localStorage.getItem('people_'+index)) || [];
+             let people = peoples[personindex];
+             
+             updateLastChecked(index); // Update LastChecked when company URL is opened
+             
+             if(people.profileURL.indexOf('http') == -1)
+             window.open('https://'+people.profileURL, '_blank');
+             else
+             window.open(people.profileURL, '_blank');
+             });
+             
+             }
+         
+         // Function to update LastChecked timede
+         function updateLastChecked(index, populateData) {
+           let companies = JSON.parse(localStorage.getItem('companies')) || [];
+           companies[index].lastChecked = new Date().toISOString();
+           localStorage.setItem('companies', JSON.stringify(companies));
+           
+         //populateTable(); // Refresh table to display updated LastChecked value
+         }
+         
+         $('#exportBtn').click(function() {
+         let data = {
+             companies: JSON.parse(localStorage.getItem('companies')),
+             people: {}
+         };
+         
+         // Populate people data
+         data.companies.forEach((company, index) => {
+             data.people[`people_${index}`] = JSON.parse(localStorage.getItem(`people_${index}`));
+         });
+         
+         // Convert data to JSON string
+         let jsonData = JSON.stringify(data);
+         
+         // Create a Blob object containing the JSON data
+         let blob = new Blob([jsonData], { type: 'application/json' });
+         
+         // Create a temporary anchor element to download the JSON file
+         let a = document.createElement('a');
+         a.href = URL.createObjectURL(blob);
+         a.download = new Date().toLocaleString() +'data.json';
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         });
+         
+         // Function to handle import button click
+         $('#importBtn').click(function() {
+         // Create an input element to trigger file selection
+         let input = document.createElement('input');
+         input.type = 'file';
+         
+         // Set accept attribute to allow only JSON files
+         input.accept = 'application/json';
+         
+         // Add change event listener to handle file selection
+         input.addEventListener('change', function(event) {
+             let file = event.target.files[0];
+         
+             if (!file) {
+                 return;
+             }
+         
+             // Read the contents of the file
+             let reader = new FileReader();
+             reader.onload = function(event) {
+                 let data = JSON.parse(event.target.result);
+         
+                 // Store companies data in local storage
+                 localStorage.setItem('companies', JSON.stringify(data.companies));
+         
+                 // Store people data in local storage
+                 Object.keys(data.people).forEach(key => {
+                     localStorage.setItem(key, JSON.stringify(data.people[key]));
+                 });
+         
+                 // Refresh table
+                 populateTable();
+             };
+             reader.readAsText(file);
+         });
+         
+         // Trigger click event to open file dialog
+         input.click();
+         });
+         
+         // Initial population of table
+         $(document).ready(function() {
+           populateTable();
+         });
+         
+      </script>
+</html>
