@@ -247,35 +247,32 @@
 		});
 
 		function profileClickBind() {
-			// Bind click event to company name links
-			$('.profile-link').click(function (event) {
-				event.preventDefault();
-				let index = $(this).data('index');
-				let personindex = $(this).data('personindex');
-				let peoples = JSON.parse(localStorage.getItem('people_' + index)) || [];
-				let people = peoples[personindex];
-
-				if (people.profileURL.indexOf('http') == -1)
-					window.open('https://' + people.profileURL, '_blank');
-				else
-					window.open(people.profileURL, '_blank');
-			});
-
+		    $('.profile-link').off('click').on('click', function (event) {
+		        event.preventDefault();
+		        let index = $(this).data('index');
+		        let personindex = $(this).data('personindex');
+		        let peoples = JSON.parse(localStorage.getItem('people_' + index)) || [];
+		        let people = peoples[personindex];
+		
+		        if (people && people.profileURL) {
+		            let url = people.profileURL.indexOf('http') === -1 ? 'https://' + people.profileURL : people.profileURL;
+		            window.open(url, '_blank');
+		        }
+		    });
 		}
-
+		
 		function companyClickBind() {
-			// Bind click event to company name links
-			$('.company-link').click(function (event) {
-				event.preventDefault();
-				let index = $(this).data('index');
-				let companies = JSON.parse(localStorage.getItem('companies')) || [];
-				let company = companies[index];
-
-				if (company.url.indexOf('http') == -1)
-					window.open('https://' + company.url, '_blank');
-				else
-					window.open(company.url, '_blank');
-			});
+		    $('.company-link').off('click').on('click', function (event) {
+		        event.preventDefault();
+		        let index = $(this).data('index');
+		        let companies = JSON.parse(localStorage.getItem('companies')) || [];
+		        let company = companies[index];
+		
+		        if (company && company.url) {
+		            let url = company.url.indexOf('http') === -1 ? 'https://' + company.url : company.url;
+		            window.open(url, '_blank');
+		        }
+		    });
 		}
 
 		// Function to edit person
