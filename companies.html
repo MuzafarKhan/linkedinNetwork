@@ -443,39 +443,35 @@
            fetchPeople(companyIndex);
          }
          
-        function companyClickBind(){
-              // Bind click event to company name links
-             $('.company-link').click(function(event) {
-             event.preventDefault();
-             let index = $(this).data('index');
-             let companies = JSON.parse(localStorage.getItem('companies')) || [];
-             let company = companies[index];
-             updateLastChecked(index); // Update LastChecked when company URL is opened
-             if(company.url.indexOf('http') == -1)
-             window.open('https://'+company.url, '_blank');
-             else
-             window.open(company.url, '_blank');
-             });
-        }
-        
-         function profileClickBind(){
-             // Bind click event to company name links
-             $('.profile-link').click(function(event) {
-             event.preventDefault();
-             let index = $(this).data('index');
-             let personindex = $(this).data('personindex');
-             let peoples = JSON.parse(localStorage.getItem('people_'+index)) || [];
-             let people = peoples[personindex];
-             
-             updateLastChecked(index); // Update LastChecked when company URL is opened
-             
-             if(people.profileURL.indexOf('http') == -1)
-             window.open('https://'+people.profileURL, '_blank');
-             else
-             window.open(people.profileURL, '_blank');
-             });
-             
-             }
+        function companyClickBind() {
+		  // Unbind previous click events before attaching a new listener
+		  $('.company-link').off('click').on('click', function(event) {
+		    event.preventDefault();
+		    let index = $(this).data('index');
+		    let companies = JSON.parse(localStorage.getItem('companies')) || [];
+		    let company = companies[index];
+		    updateLastChecked(index);
+		    
+		    let url = company.url.indexOf('http') === -1 ? 'https://' + company.url : company.url;
+		    window.open(url, '_blank');
+		  });
+		}
+		
+		function profileClickBind() {
+		  // Unbind previous click events before attaching a new listener
+		  $('.profile-link').off('click').on('click', function(event) {
+		    event.preventDefault();
+		    let index = $(this).data('index');
+		    let personindex = $(this).data('personindex');
+		    let peoples = JSON.parse(localStorage.getItem('people_' + index)) || [];
+		    let people = peoples[personindex];
+		    
+		    updateLastChecked(index);
+		    
+		    let url = people.profileURL.indexOf('http') === -1 ? 'https://' + people.profileURL : people.profileURL;
+		    window.open(url, '_blank');
+		  });
+		}
          
          // Function to update LastChecked timede
          function updateLastChecked(index, populateData) {
